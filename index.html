@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino - Control Diario</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #2d0036 0%, #6c3483 100%);
+            color: #f3e6ff;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        header {
+            background: rgba(108, 52, 131, 0.97);
+            padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+            text-align: center;
+            color: #fff;
+            box-shadow: 0 4px 24px #2d0036cc;
+            border-bottom-left-radius: 2rem;
+            border-bottom-right-radius: 2rem;
+            position: relative;
+            animation: fadeInDown 1.2s cubic-bezier(.68,-0.55,.27,1.55);
+        }
+        @keyframes fadeInDown {
+            0% { opacity: 0; transform: translateY(-60px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        header .mensaje-cami {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            color: #ffe6fa;
+            background: rgba(162, 89, 198, 0.25);
+            padding: 0.7rem 1.2rem;
+            border-radius: 1rem;
+            display: inline-block;  
+            box-shadow: 0 2px 8px #a259c655;
+            animation: pulseCami 2.5s infinite alternate;
+        }
+        @keyframes pulseCami {
+            0% { box-shadow: 0 2px 8px #a259c655; background: rgba(162, 89, 198, 0.25); }
+            100% { box-shadow: 0 4px 24px #e0c3fc99; background: rgba(162, 89, 198, 0.38); }
+        }
+        h1, h2, h3 {
+            color: #8565a3;
+            text-shadow: 0 2px 8px #2d003655;
+        }
+        section {
+            background: rgba(61, 21, 95, 0.90);
+            margin: 2.5rem auto 2rem auto;
+            padding: 2.2rem 2rem 1.5rem 2rem;
+            border-radius: 2rem;
+            max-width: 900px;
+            box-shadow: 0 4px 24px #2d003655;
+            border: 2.5px solid #a259c6;
+            position: relative;
+            animation: fadeInSection 1.2s cubic-bezier(.68,-0.55,.27,1.55);
+        }
+        @keyframes fadeInSection {
+            0% { opacity: 0; transform: scale(0.97) translateY(40px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        section:not(:first-of-type) {
+            margin-top: 1.5rem;
+        }
+        .section-titulo {
+            display: flex;
+            align-items: center;
+            gap: 0.7em;
+            margin-bottom: 0.7em;
+        }
+        .section-titulo .icono {
+            font-size: 1.7em;
+            filter: drop-shadow(0 2px 6px #a259c6cc);
+        }
+        .separador {
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, #a259c6 0%, #e0c3fc 100%);
+            opacity: 0.25;
+            border-radius: 2px;
+            margin: 1.2rem auto 1.5rem auto;
+            animation: fadeInSection 1.2s 0.2s backwards;
+        }
+        label {
+            display: block;
+            margin-top: 1rem;
+            color: #e0c3fc;
+            font-weight: 500;
+        }
+        input, select {
+            padding: 0.6rem;
+            border-radius: 0.7rem;
+            border: none;
+            margin-top: 0.3rem;
+            width: 100%;
+            background: rgba(243, 230, 255, 0.85);
+            color: #2d0036;
+            font-size: 1rem;
+            box-shadow: 0 1px 4px #a259c633;
+            transition: box-shadow 0.2s, background 0.2s;
+        }
+        input:focus, select:focus {
+            outline: 2px solid #a259c6;
+            background: #fff0ff;
+            box-shadow: 0 2px 12px #a259c655;
+        }
+        button {
+            background: linear-gradient(90deg, #a259c6 60%, #e0c3fc 100%);
+            color: #2d0036;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 0.7rem;
+            margin-top: 1.2rem;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px #a259c655;
+            transition: background 0.2s, color 0.2s, transform 0.1s;
+            letter-spacing: 0.5px;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #7c3fa6 60%, #a259c6 100%);
+            color: #fff;
+            transform: scale(1.04);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.2rem;
+            background: rgba(75, 32, 102, 0.93);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 2px 12px #2d003655;
+            font-size: 1.04em;
+        }
+        th, td {
+            padding: 0.8rem;
+            text-align: center;
+            border-bottom: 1px solid #a259c6;
+        }
+        th {
+            background: rgba(124, 63, 166, 0.95);
+            color: #fff;
+        }
+        tfoot td {
+            font-weight: bold;
+            background: rgba(162, 89, 198, 0.95);
+            color: #fff;
+        }
+        .explicacion {
+            background: linear-gradient(90deg, #a259c6 60%, #e0c3fc 100%);
+            color: #2d0036;
+            padding: 0.9rem 1.2rem;
+            border-radius: 0.8rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.08rem;
+            box-shadow: 0 2px 8px #a259c655;
+            opacity: 0.93;
+            position: relative;
+        }
+        .explicacion .corazon-cami {
+            color: #e0c3fc;
+            font-size: 1.2em;
+            margin-left: 0.3em;
+            animation: corazonLatir 1.5s infinite alternate;
+        }
+        @keyframes corazonLatir {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.18); }
+        }
+        .flex-row {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .flex-col {
+            flex: 1 1 300px;
+        }
+        .mensaje-final-cami {
+            margin-top: 2.5rem;
+            text-align: center;
+            font-size: 1.3rem;
+            color: #ffe6fa;
+            background: rgba(162, 89, 198, 0.18);
+            padding: 1.2rem 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 2px 12px #a259c655;
+            font-style: italic;
+            animation: fadeInSection 1.2s 0.3s backwards;
+        }
+        .mensaje-final-cami .corazon-cami {
+            color: #e0c3fc;
+            font-size: 1.3em;
+            margin: 0 0.2em;
+            animation: corazonLatir 1.5s infinite alternate;
+        }
+        .detalle-cami {
+            color: #e0c3fc;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin-top: 0.7em;
+            display: block;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        @media (max-width: 700px) {
+            section {
+                padding: 1rem;
+            }
+            .flex-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+        .editar-btn { background: #e0c3fc; color: #6c3483; border: none; border-radius: 0.5em; padding: 0.3em 0.7em; font-size: 1.1em; cursor: pointer; transition: background 0.2s; }
+        .editar-btn:hover { background: #a259c6; color: #fff; }
+        .eliminar-btn { background: transparent; color: #c0392b; border: none; border-radius: 0.5em; padding: 0.1em 0.3em; font-size: 0.95em; cursor: pointer; transition: background 0.2s; vertical-align: middle; }
+        .eliminar-btn:hover { background: #f9e6e6; color: #fff; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Casino - Control Diario</h1>
+        <p>Registra premios, ventas y gastos de manera sencilla y rápida. <br><span style="font-size:1.1em;color:#e0c3fc;">(Todos los valores están en <b>Peso Colombiano - COP</b> <span title='Peso Colombiano'>🇨🇴</span>)</span></p>
+        <div class="mensaje-cami">💜 Para Cami, la mejor compañera de juegos y de vida. ¡Gracias por hacer cada día más bonito! <span class="corazon-cami">💜</span></div>
+    </header>
+
+    <section>
+        <div class="section-titulo"><span class="icono">🎰</span><h2>Registro de Máquinas</h2></div>
+        <div class="explicacion">Registra aquí los premios pagados por cada máquina. Puedes registrar varios premios por máquina y día.<span class="detalle-cami">¡Cami, que la suerte siempre te acompañe! 💜</span></div>
+        <div class="separador"></div>
+        <form id="form-maquina">
+            <label for="numMaquina">Número de máquina (1-20):</label>
+            <select id="numMaquina" required>
+                <option value="">Selecciona...</option>
+                <!-- Opciones generadas por JS -->
+            </select>
+            <label for="premio">Premio pagado ($ COP):</label>
+            <input type="number" id="premio" min="0" step="100" required>
+            <button type="submit">Registrar</button>
+        </form>
+        <table id="tabla-maquinas">
+            <thead>
+                <tr>
+                    <th>Máquina</th>
+                    <th>Premio ($ COP)</th>
+                    <th>Fecha/Hora</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <section>
+        <div class="section-titulo"><span class="icono">💵</span><h2>Recaudos de Máquinas</h2></div>
+        <div class="explicacion">Registra aquí los recaudos de cada máquina cuando no hay efectivo para pagar premios u otros motivos. <span class="detalle-cami">¡Cami, cada recaudo es un paso más para cumplir tus sueños! 💜</span></div>
+        <div class="separador"></div>
+        <form id="form-recaudo">
+            <label for="numMaquinaRecaudo">Número de máquina (1-20):</label>
+            <select id="numMaquinaRecaudo" required>
+                <option value="">Selecciona...</option>
+                <!-- Opciones generadas por JS -->
+            </select>
+            <label for="valorRecaudo">Valor del recaudo ($ COP):</label>
+            <input type="number" id="valorRecaudo" min="0" step="100" required>
+            <button type="submit">Registrar Recaudo</button>
+        </form>
+        <table id="tabla-recaudos">
+            <thead>
+                <tr>
+                    <th>Máquina</th>
+                    <th>Valor ($ COP)</th>
+                    <th>Fecha/Hora</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2">Total recaudos</td>
+                    <td id="totalRecaudos">$0 COP</td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
+
+    <section>
+        <div class="section-titulo"><span class="icono">💸</span><h2>Gastos y Utilería</h2></div>
+        <div class="explicacion">Anota aquí los gastos del casino, como comidas, Bonos, bingos, etc. <span class="detalle-cami">¡Cami, cada gasto es una inversión en momentos felices! 💜</span></div>
+        <div class="separador"></div>
+        <form id="form-gasto">
+            <label for="descGasto">Descripción:</label>
+            <input type="text" id="descGasto" required>
+            <label for="valorGasto">Valor ($ COP):</label>
+            <input type="number" id="valorGasto" min="0" step="100" required>
+            <button type="submit">Agregar Gasto</button>
+        </form>
+        <table id="tabla-gastos">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Valor ($ COP)</th>
+                    <th>Fecha/Hora</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <section>
+        <div class="section-titulo"><span class="icono">🍺</span><h2>Venta de Cervezas</h2></div>
+        <div class="explicacion">Registra la cantidad y valor de cada tipo de cerveza vendida. El total se calcula automáticamente.<span class="detalle-cami">¡Cami, que nunca falte la alegría y el brindis! 💜</span></div>
+        <div class="separador"></div>
+        <form id="form-cerveza">
+            <div class="flex-row">
+                <div class="flex-col">
+                    <label for="aguilaCant">Aguila Negra - Cantidad:</label>
+                    <input type="number" id="aguilaCant" min="0" value="0">
+                    <label for="aguilaValor">Valor unitario ($ COP):</label>
+                    <input type="number" id="aguilaValor" min="0" value="3000" readonly style="background:#e0e0e0;cursor:not-allowed;">
+                </div>
+                <div class="flex-col">
+                    <label for="coronaCant">Corona - Cantidad:</label>
+                    <input type="number" id="coronaCant" min="0" value="0">
+                    <label for="coronaValor">Valor unitario ($ COP):</label>
+                    <input type="number" id="coronaValor" min="0" value="4000" readonly style="background:#e0e0e0;cursor:not-allowed;">
+                </div>
+                <div class="flex-col">
+                    <label for="costenaCant">Costeña Negra - Cantidad:</label>
+                    <input type="number" id="costenaCant" min="0" value="0">
+                    <label for="costenaValor">Valor unitario ($ COP):</label>
+                    <input type="number" id="costenaValor" min="0" value="2000" readonly style="background:#e0e0e0;cursor:not-allowed;">
+                </div>
+                <div class="flex-col">
+                    <label for="otraNombre">Otra (nombre):</label>
+                    <input type="text" id="otraNombre" placeholder="Nombre cerveza">
+                    <label for="otraCant">Cantidad:</label>
+                    <input type="number" id="otraCant" min="0" value="0">
+                    <label for="otraValor">Valor unitario ($ COP):</label>
+                    <input type="number" id="otraValor" min="0" value="0">
+                </div>
+            </div>
+            <button type="submit">Registrar Venta</button>
+        </form>
+        <table id="tabla-cervezas">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Valor unitario ($ COP)</th>
+                    <th>Total vendido ($ COP)</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">Total general de cervezas vendidas</td>
+                    <td id="totalCervezas">$0 COP</td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
+
+    <section>
+        <div class="section-titulo"><span class="icono">📊</span><h2>Resumen Diario: "Cami Cuentas"</h2></div>
+        <div class="explicacion">Aquí ves el total de premios pagados, total de cervezas vendidas, total de recaudos y el total general del día.<span class="detalle-cami">¡Cami, este resumen es para ti! 💜</span></div>
+        <div class="separador"></div>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Total premios pagados</td>
+                    <td id="resumenPremios">$0 COP</td>
+                </tr>
+                <tr>
+                    <td>Total cervezas vendidas</td>
+                    <td id="resumenCervezas">$0 COP</td>
+                </tr>
+                <tr>
+                    <td>Total recaudos</td>
+                    <td id="resumenRecaudos">$0 COP</td>
+                </tr>
+                <tr>
+                    <td><strong>Total general del día</strong></td>
+                    <td id="resumenTotal"><strong>$0 COP</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        <button id="btnCierre" style="margin-top:2rem;">Cierre y Descarga</button>
+        <div id="cierreResultado" style="margin-top:2rem;"></div>
+    </section>
+    <div class="mensaje-final-cami">
+        <span class="corazon-cami">💜</span> Gracias por tu alegría, tu amor y tu magia, Cami. <br>¡Que cada día en el casino esté lleno de suerte y sonrisas a tu lado! <span class="corazon-cami">💜</span>
+    </div>
+    <div style="text-align:center;margin:2.5em 0 2em 0;">
+        <button id="btnLimpiarTodo" style="background:#c0392b;color:#fff;padding:1em 2em;border:none;border-radius:1em;font-size:1.1em;cursor:pointer;font-weight:bold;box-shadow:0 2px 8px #c0392b33;transition:background 0.2s;">Limpiar todo</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        // Generar opciones de máquinas
+        const selectMaquina = document.getElementById('numMaquina');
+        for(let i=1; i<=20; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = i;
+            selectMaquina.appendChild(opt);
+        }
+        // Generar opciones para recaudo
+        const selectMaquinaRecaudo = document.getElementById('numMaquinaRecaudo');
+        for(let i=1; i<=20; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = i;
+            selectMaquinaRecaudo.appendChild(opt);
+        }
+
+        // Máquinas
+        const formMaquina = document.getElementById('form-maquina');
+        const tablaMaquinas = document.getElementById('tabla-maquinas').querySelector('tbody');
+        let registrosMaquinas = [];
+        formMaquina.onsubmit = function(e) {
+            e.preventDefault();
+            const num = selectMaquina.value;
+            const premio = parseInt(document.getElementById('premio').value) || 0;
+            const fecha = new Date().toLocaleString();
+            registrosMaquinas.push({num, premio, fecha});
+            actualizarTablaMaquinas();
+            formMaquina.reset();
+            guardarDatos();
+        };
+        function mostrarMensajeVacio(tabla, mensaje) {
+            tabla.innerHTML = `<tr><td colspan='100%' style='padding:2em;text-align:center;color:#a259c6;font-size:1.1em;background:rgba(243,230,255,0.7);border-radius:1em;'>${mensaje}</td></tr>`;
+        }
+        function actualizarTablaMaquinas() {
+            tablaMaquinas.innerHTML = '';
+            const tfoot = document.getElementById('tabla-maquinas').querySelector('tfoot');
+            if (registrosMaquinas.length === 0) {
+                if (tfoot) tfoot.style.display = 'none';
+                mostrarMensajeVacio(tablaMaquinas, 'No hay premios registrados aún. ¡Agrega el primero, Cami! 💜');
+                actualizarResumen();
+                return;
+            } else {
+                if (tfoot) tfoot.style.display = '';
+            }
+            registrosMaquinas.forEach((r, idx) => {
+                tablaMaquinas.innerHTML += `<tr><td>${r.num}</td><td>$${formatoCOP(r.premio)} COP</td><td>${r.fecha}</td><td><button class='editar-btn' data-idx='${idx}' title='Modificar'>✏️</button> <button class='eliminar-btn' data-idx='${idx}' title='Eliminar'>🗑️</button></td></tr>`;
+            });
+            actualizarResumen();
+            // Botones editar
+            tablaMaquinas.querySelectorAll('.editar-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const i = parseInt(this.dataset.idx);
+                    const reg = registrosMaquinas[i];
+                    const nuevoNum = prompt('Número de máquina:', reg.num);
+                    const nuevoPremio = prompt('Premio pagado ($ COP):', reg.premio);
+                    if (nuevoNum && nuevoPremio !== null) {
+                        registrosMaquinas[i].num = nuevoNum;
+                        registrosMaquinas[i].premio = parseInt(nuevoPremio) || 0;
+                        guardarDatos();
+                        actualizarTablaMaquinas();
+                    }
+                };
+            });
+            // Botones eliminar
+            tablaMaquinas.querySelectorAll('.eliminar-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const i = parseInt(this.dataset.idx);
+                    if (confirm('¿Seguro que deseas eliminar este registro?')) {
+                        registrosMaquinas.splice(i, 1);
+                        guardarDatos();
+                        actualizarTablaMaquinas();
+                    }
+                };
+            });
+        }
+
+        // Recaudos
+        const formRecaudo = document.getElementById('form-recaudo');
+        const tablaRecaudos = document.getElementById('tabla-recaudos').querySelector('tbody');
+        let registrosRecaudos = [];
+        formRecaudo.onsubmit = function(e) {
+            e.preventDefault();
+            const num = selectMaquinaRecaudo.value;
+            const valor = parseInt(document.getElementById('valorRecaudo').value) || 0;
+            const fecha = new Date().toLocaleString();
+            registrosRecaudos.push({num, valor, fecha});
+            actualizarTablaRecaudos();
+            formRecaudo.reset();
+            guardarDatos();
+        };
+        function actualizarTablaRecaudos() {
+            tablaRecaudos.innerHTML = '';
+            const tfoot = document.getElementById('tabla-recaudos').querySelector('tfoot');
+            if (registrosRecaudos.length === 0) {
+                if (tfoot) tfoot.style.display = 'none';
+                mostrarMensajeVacio(tablaRecaudos, 'No hay recaudos registrados aún. ¡Agrega el primero, Cami! 💵');
+                document.getElementById('totalRecaudos').textContent = '$0 COP';
+                actualizarResumen();
+                return;
+            } else {
+                if (tfoot) tfoot.style.display = '';
+            }
+            let total = 0;
+            registrosRecaudos.forEach((r, idx) => {
+                total += r.valor;
+                tablaRecaudos.innerHTML += `<tr><td>${r.num}</td><td>$${formatoCOP(r.valor)} COP</td><td>${r.fecha}</td><td><button class='editar-btn' data-idx='${idx}' title='Modificar'>✏️</button> <button class='eliminar-btn' data-idx='${idx}' title='Eliminar'>🗑️</button></td></tr>`;
+            });
+            document.getElementById('totalRecaudos').textContent = `$${formatoCOP(total)} COP`;
+            actualizarResumen();
+            // Botones editar
+            tablaRecaudos.querySelectorAll('.editar-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const i = parseInt(this.dataset.idx);
+                    const reg = registrosRecaudos[i];
+                    const nuevoNum = prompt('Número de máquina:', reg.num);
+                    const nuevoValor = prompt('Valor del recaudo ($ COP):', reg.valor);
+                    if (nuevoNum && nuevoValor !== null) {
+                        registrosRecaudos[i].num = nuevoNum;
+                        registrosRecaudos[i].valor = parseInt(nuevoValor) || 0;
+                        guardarDatos();
+                        actualizarTablaRecaudos();
+                    }
+                };
+            });
+            // Botones eliminar
+            tablaRecaudos.querySelectorAll('.eliminar-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const i = parseInt(this.dataset.idx);
+                    if (confirm('¿Seguro que deseas eliminar este registro?')) {
+                        registrosRecaudos.splice(i, 1);
+                        guardarDatos();
+                        actualizarTablaRecaudos();
+                    }
+                };
+            });
+        }
+
+        // Gastos
+        const formGasto = document.getElementById('form-gasto');
+        const tablaGastos = document.getElementById('tabla-gastos').querySelector('tbody');
+        let registrosGastos = [];
+        formGasto.onsubmit = function(e) {
+            e.preventDefault();
+            const desc = document.getElementById('descGasto').value;
+            const valor = parseInt(document.getElementById('valorGasto').value) || 0;
+            const fecha = new Date().toLocaleString();
+            registrosGastos.push({desc, valor, fecha});
+            actualizarTablaGastos();
+            formGasto.reset();
+            guardarDatos();
+        };
+        function actualizarTablaGastos() {
+            tablaGastos.innerHTML = '';
+            const tfoot = document.getElementById('tabla-gastos').querySelector('tfoot');
+            if (registrosGastos.length === 0) {
+                if (tfoot) tfoot.style.display = 'none';
+                mostrarMensajeVacio(tablaGastos, 'No hay gastos registrados aún. ¡Agrega el primero, Cami! 💸');
+                actualizarResumen();
+                return;
+            } else {
+                if (tfoot) tfoot.style.display = '';
+            }
+            registrosGastos.forEach((r, idx) => {
+                tablaGastos.innerHTML += `<tr><td>${r.desc}</td><td>$${formatoCOP(r.valor)} COP</td><td>${r.fecha}</td><td><button class='editar-btn' data-idx='${idx}' title='Modificar'>✏️</button> <button class='eliminar-btn' data-idx='${idx}' title='Eliminar'>🗑️</button></td></tr>`;
+            });
+            // Botones editar
+            tablaGastos.querySelectorAll('.editar-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const i = parseInt(this.dataset.idx);
+                    const reg = registrosGastos[i];
+                    const nuevaDesc = prompt('Descripción:', reg.desc);
+                    const nuevoValor = prompt('Valor ($ COP):', reg.valor);
+                    if (nuevaDesc && nuevoValor !== null) {
+                        registrosGastos[i].desc = nuevaDesc;
+                        registrosGastos[i].valor = parseInt(nuevoValor) || 0;
+                        guardarDatos();
+                        actualizarTablaGastos();
+                    }
+                };
+            });
+            // Botones eliminar
+            tablaGastos.querySelectorAll('.eliminar-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const i = parseInt(this.dataset.idx);
+                    if (confirm('¿Seguro que deseas eliminar este registro?')) {
+                        registrosGastos.splice(i, 1);
+                        guardarDatos();
+                        actualizarTablaGastos();
+                    }
+                };
+            });
+        }
+
+        // Cervezas
+        const formCerveza = document.getElementById('form-cerveza');
+        const tablaCervezas = document.getElementById('tabla-cervezas').querySelector('tbody');
+        let registrosCervezas = [];
+        formCerveza.onsubmit = function(e) {
+            e.preventDefault();
+            const tipos = [
+                {nombre: 'Aguila Negra', cant: parseInt(document.getElementById('aguilaCant').value) || 0, valor: 3000},
+                {nombre: 'Corona', cant: parseInt(document.getElementById('coronaCant').value) || 0, valor: 4000},
+                {nombre: 'Costeña Negra', cant: parseInt(document.getElementById('costenaCant').value) || 0, valor: 2000},
+            ];
+            const otraNombre = document.getElementById('otraNombre').value.trim() || 'Otra';
+            tipos.push({nombre: otraNombre, cant: parseInt(document.getElementById('otraCant').value) || 0, valor: parseInt(document.getElementById('otraValor').value) || 0});
+            tipos.forEach(t => {
+                if(t.cant > 0) {
+                    registrosCervezas.push({...t});
+                }
+            });
+            actualizarTablaCervezas();
+            formCerveza.reset();
+            guardarDatos();
+        };
+        function actualizarTablaCervezas() {
+            tablaCervezas.innerHTML = '';
+            const tfoot = document.getElementById('tabla-cervezas').querySelector('tfoot');
+            if (registrosCervezas.length === 0) {
+                if (tfoot) tfoot.style.display = 'none';
+                mostrarMensajeVacio(tablaCervezas, 'No hay ventas de cervezas aún. ¡Agrega la primera, Cami! 🍺');
+                document.getElementById('totalCervezas').textContent = '$0 COP';
+                if (tfoot) tfoot.style.display = 'none';
+                actualizarResumen();
+                return;
+            } else {
+                if (tfoot) tfoot.style.display = '';
+            }
+            let totalCervezas = 0;
+            let totalCantidadCervezas = 0;
+            let cantidadesPorTipo = {};
+            registrosCervezas.forEach((r, idx) => {
+                let total = r.cant * (r.valor || 0);
+                totalCervezas += total;
+                totalCantidadCervezas += r.cant;
+                if (cantidadesPorTipo[r.nombre]) {
+                    cantidadesPorTipo[r.nombre] += r.cant;
+                } else {
+                    cantidadesPorTipo[r.nombre] = r.cant;
+                }
+                let valorStr = r.valor > 0 ? `<span style='color:#a259c6;'>$${formatoCOP(r.valor)} COP</span>` : `<span style='color:#a259c6;'>Cortesía</span>`;
+                let totalStr = r.valor > 0 ? `<span style='color:#a259c6;'>$${formatoCOP(r.cant*r.valor)} COP</span>` : `<span style='color:#a259c6;'>Cortesía</span>`;
+                tablaCervezas.innerHTML += `<tr><td>${r.nombre}</td><td>${r.cant}</td><td>${valorStr}</td><td>${totalStr}</td><td><button class='editar-btn' data-idx='${idx}' title='Modificar'>✏️</button> <button class='eliminar-btn' data-idx='${idx}' title='Eliminar'>🗑️</button></td></tr>`;
+            });
+            // Calcular total de cortesías
+            let totalCortesias = registrosCervezas.filter(r => !r.valor || r.valor == 0).reduce((acc, r) => acc + r.cant, 0);
+            // Mostrar cantidad total de cervezas vendidas
+            // (No mostrar estos datos en la tabla principal)
+            document.getElementById('totalCervezas').textContent = `$${formatoCOP(totalCervezas)} COP`;
+            actualizarResumen();
+            // Botones editar
+            tablaCervezas.querySelectorAll('.editar-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const i = parseInt(this.dataset.idx);
+                    const reg = registrosCervezas[i];
+                    const nuevoNombre = prompt('Tipo de cerveza:', reg.nombre);
+                    const nuevaCant = prompt('Cantidad:', reg.cant);
+                    const nuevoValor = prompt('Valor unitario ($ COP):', reg.valor);
+                    if (nuevoNombre && nuevaCant !== null && nuevoValor !== null) {
+                        registrosCervezas[i].nombre = nuevoNombre;
+                        registrosCervezas[i].cant = parseInt(nuevaCant) || 0;
+                        registrosCervezas[i].valor = parseInt(nuevoValor) || 0;
+                        guardarDatos();
+                        actualizarTablaCervezas();
+                    }
+                };
+            });
+            // Botones eliminar
+            tablaCervezas.querySelectorAll('.eliminar-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const i = parseInt(this.dataset.idx);
+                    if (confirm('¿Seguro que deseas eliminar este registro?')) {
+                        registrosCervezas.splice(i, 1);
+                        guardarDatos();
+                        actualizarTablaCervezas();
+                    }
+                };
+            });
+        }
+
+        // Resumen Diario
+        function actualizarResumen() {
+            // Total premios pagados
+            let totalPremios = registrosMaquinas.reduce((acc, r) => acc + (r.premio || 0), 0);
+            document.getElementById('resumenPremios').textContent = `$${formatoCOP(totalPremios)} COP`;
+            // Total cervezas
+            let totalCervezas = registrosCervezas.reduce((acc, r) => acc + (r.cant * r.valor), 0);
+            document.getElementById('resumenCervezas').textContent = `$${formatoCOP(totalCervezas)} COP`;
+            // Total recaudos
+            let totalRecaudos = registrosRecaudos.reduce((acc, r) => acc + (r.valor || 0), 0);
+            document.getElementById('resumenRecaudos').textContent = `$${formatoCOP(totalRecaudos)} COP`;
+            // Total general
+            document.getElementById('resumenTotal').textContent = `$${formatoCOP(totalPremios + totalCervezas + totalRecaudos)} COP`;
+        }
+
+        // Formato de moneda colombiana
+        function formatoCOP(valor) {
+            return valor.toLocaleString('es-CO');
+        }
+
+        // Cierre y descarga
+        document.getElementById('btnCierre').onclick = function() {
+            const fechaCierre = new Date().toLocaleString();
+            let html = `<div id='cierreDiarioPDF' style='font-family:Segoe UI,Arial,sans-serif;max-width:900px;margin:auto;background:#f8f6fb;border-radius:2rem;padding:2rem 1rem 1.5rem 1rem;box-shadow:0 4px 24px #2d003655;'>`;
+            html += `<h2 style='color:#6c3483;text-align:center;margin-bottom:0.5em;text-shadow:0 2px 8px #e0c3fc;background:#e0c3fc;padding:0.5em 0;border-radius:1em;'>📝 Cierre Diario</h2>`;
+            html += `<div style='text-align:center;font-size:1.1em;color:#6c3483;margin-bottom:1.5em;background:#ede3f7;padding:0.5em 0.8em;border-radius:1em;'>${fechaCierre}</div>`;
+
+            // Premios
+            html += `<div style='margin-bottom:1.2em;'><span style='font-size:1.5em;'>🎰</span> <span style='font-size:1.15em;color:#6c3483;font-weight:bold;text-shadow:0 2px 8px #e0c3fc;background:#ede3f7;padding:0.2em 1em;border-radius:1em;'>Premios Pagados</span></div>`;
+            html += `<table style='width:100%;margin-bottom:0.7em;background:#fff;border-radius:1em;overflow:hidden;font-size:1em;'>`;
+            html += `<tr style='background:#e0c3fc;color:#6c3483;'><th>Máquina</th><th>Premio</th><th>Fecha/Hora</th></tr>`;
+            registrosMaquinas.forEach(r => {
+                html += `<tr style='background:#fff;'><td style='color:#2d0036;font-weight:bold;'>${r.num}</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(r.premio)} COP</td><td style='color:#7c3fa6;'>${r.fecha}</td></tr>`;
+            });
+            html += `<tr style='background:#ede3f7;'><td colspan='2' style='text-align:right;font-weight:bold;color:#6c3483;'>Total premios</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(registrosMaquinas.reduce((a,b)=>a+(b.premio||0),0))} COP</td></tr>`;
+            html += `</table>`;
+
+            // Recaudos
+            html += `<div style='margin-bottom:1.2em;'><span style='font-size:1.5em;'>💵</span> <span style='font-size:1.15em;color:#6c3483;font-weight:bold;text-shadow:0 2px 8px #e0c3fc;background:#ede3f7;padding:0.2em 1em;border-radius:1em;'>Recaudos de Máquinas</span></div>`;
+            html += `<table style='width:100%;margin-bottom:0.7em;background:#fff;border-radius:1em;overflow:hidden;font-size:1em;'>`;
+            html += `<tr style='background:#e0c3fc;color:#6c3483;'><th>Máquina</th><th>Valor</th><th>Fecha/Hora</th></tr>`;
+            registrosRecaudos.forEach(r => {
+                html += `<tr style='background:#fff;'><td style='color:#222;font-weight:bold;'>${r.num}</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(r.valor)} COP</td><td style='color:#7c3fa6;'>${r.fecha}</td></tr>`;
+            });
+            html += `<tr style='background:#ede3f7;'><td colspan='2' style='text-align:right;font-weight:bold;color:#6c3483;'>Total recaudos</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(registrosRecaudos.reduce((a,b)=>a+(b.valor||0),0))} COP</td></tr>`;
+            html += `</table>`;
+
+            // Gastos
+            html += `<div style='margin-bottom:1.2em;'><span style='font-size:1.5em;'>💸</span> <span style='font-size:1.15em;color:#6c3483;font-weight:bold;text-shadow:0 2px 8px #e0c3fc;background:#ede3f7;padding:0.2em 1em;border-radius:1em;'>Gastos y Utilería</span></div>`;
+            html += `<table style='width:100%;margin-bottom:0.7em;background:#fff;border-radius:1em;overflow:hidden;font-size:1em;'>`;
+            html += `<tr style='background:#e0c3fc;color:#6c3483;'><th>Descripción</th><th>Valor</th><th>Fecha/Hora</th></tr>`;
+            registrosGastos.forEach(r => {
+                html += `<tr style='background:#fff;'><td style='color:#222;font-weight:bold;'>${r.desc}</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(r.valor)} COP</td><td style='color:#7c3fa6;'>${r.fecha}</td></tr>`;
+            });
+            html += `<tr style='background:#ede3f7;'><td colspan='2' style='text-align:right;font-weight:bold;color:#6c3483;'>Total gastos</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(registrosGastos.reduce((a,b)=>a+(b.valor||0),0))} COP</td></tr>`;
+            html += `</table>`;
+
+            // Cervezas
+            html += `<div style='margin-bottom:1.2em;'><span style='font-size:1.5em;'>🍺</span> <span style='font-size:1.15em;color:#6c3483;font-weight:bold;text-shadow:0 2px 8px #e0c3fc;background:#ede3f7;padding:0.2em 1em;border-radius:1em;'>Cervezas Vendidas</span></div>`;
+            html += `<table style='width:100%;margin-bottom:0.7em;background:#fff;border-radius:1em;overflow:hidden;font-size:1em;'>`;
+            html += `<tr style='background:#e0c3fc;color:#6c3483;'><th>Tipo</th><th>Cantidad</th><th>Valor unitario</th><th>Total vendido</th></tr>`;
+            registrosCervezas.forEach((r, idx) => {
+                let valorStr = r.valor > 0 ? `<span style='color:#a259c6;'>$${formatoCOP(r.valor)} COP</span>` : `<span style='color:#a259c6;'>Cortesía</span>`;
+                let totalStr = r.valor > 0 ? `<span style='color:#a259c6;'>$${formatoCOP(r.cant*r.valor)} COP</span>` : `<span style='color:#a259c6;'>Cortesía</span>`;
+                html += `<tr style='background:#fff;'><td style='font-weight:bold;color:#222;'>${r.nombre}</td><td style='font-weight:bold;color:#222;'>${r.cant}</td><td>${valorStr}</td><td>${totalStr}</td></tr>`;
+            });
+            // Calcular total de cortesías
+            let totalCortesiasCierre = registrosCervezas.filter(r => !r.valor || r.valor == 0).reduce((acc, r) => acc + r.cant, 0);
+            // Mostrar cantidad total de cervezas vendidas en el cierre
+            let totalCantidadCervezasCierre = 0;
+            let cantidadesPorTipoCierre = {};
+            registrosCervezas.forEach(r => {
+                let valorStr = r.valor > 0 ? `<span style='color:#a259c6;'>$${formatoCOP(r.valor)} COP</span>` : `<span style='color:#a259c6;'>Cortesía</span>`;
+                let totalStr = r.valor > 0 ? `<span style='color:#a259c6;'>$${formatoCOP(r.cant*r.valor)} COP</span>` : `<span style='color:#a259c6;'>Cortesía</span>`;
+                html += `<tr style='background:#fff;'><td style='font-weight:bold;color:#222;'>${r.nombre}</td><td style='font-weight:bold;color:#222;'>${r.cant}</td><td>${valorStr}</td><td>${totalStr}</td></tr>`;
+                totalCantidadCervezasCierre += r.cant;
+                if (cantidadesPorTipoCierre[r.nombre]) {
+                    cantidadesPorTipoCierre[r.nombre] += r.cant;
+                } else {
+                    cantidadesPorTipoCierre[r.nombre] = r.cant;
+                }
+            });
+            // Calcular total de cortesías para el cierre
+            totalCortesiasCierre = registrosCervezas.filter(r => !r.valor || r.valor == 0).reduce((acc, r) => acc + r.cant, 0);
+            // Mostrar cantidad total de cervezas vendidas en el cierre
+            if (totalCantidadCervezasCierre > 0) {
+                html += `<tr><td colspan='4' style='font-weight:bold;color:#6c3483;text-align:right;background:#ede3f7;'>Cantidad total de cervezas vendidas: ${totalCantidadCervezasCierre}</td></tr>`;
+            }
+            // Mostrar cantidad por tipo en el cierre
+            Object.keys(cantidadesPorTipoCierre).forEach(tipo => {
+                html += `<tr><td colspan='4' style='font-weight:bold;color:#6c3483;text-align:right;background:#f3e6ff;'>${tipo}: ${cantidadesPorTipoCierre[tipo]}</td></tr>`;
+            });
+            if (totalCortesiasCierre > 0) {
+                html += `<tr><td colspan='4' style='font-weight:bold;color:#a259c6;text-align:right;background:#ede3f7;'>Total cortesías: ${totalCortesiasCierre}</td></tr>`;
+            }
+            html += `</table>`;
+
+            // Resumen final
+            let totalPremios = registrosMaquinas.reduce((acc, r) => acc + (r.premio || 0), 0);
+            let totalCervezas = registrosCervezas.reduce((acc, r) => acc + (r.cant * r.valor), 0);
+            let totalRecaudos = registrosRecaudos.reduce((acc, r) => acc + (r.valor || 0), 0);
+            let totalGastos = registrosGastos.reduce((acc, r) => acc + (r.valor || 0), 0);
+            let totalGeneral = totalPremios + totalCervezas + totalRecaudos;
+            html += `<div style='margin:2em 0 1em 0;text-align:center;'>
+                <span style='font-size:2em;'>📊</span>
+                <span style='font-size:1.25em;color:#6c3483;font-weight:bold;text-shadow:0 2px 8px #e0c3fc;background:#ede3f7;padding:0.2em 1em;border-radius:1em;'>Resumen Final</span>
+            </div>`;
+            html += `<table style='width:100%;background:#fff;border-radius:1em;overflow:hidden;font-size:1.1em;'>`;
+            html += `<tr style='background:#e0c3fc;color:#6c3483;'><th>Concepto</th><th>Total</th></tr>`;
+            html += `<tr><td style='color:#6c3483;'>🎰 Premios pagados</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(totalPremios)} COP</td></tr>`;
+            html += `<tr><td style='color:#6c3483;'>🍺 Cervezas vendidas</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(totalCervezas)} COP</td></tr>`;
+            html += `<tr><td style='color:#6c3483;'>💵 Recaudos</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(totalRecaudos)} COP</td></tr>`;
+            html += `<tr><td style='color:#6c3483;'>💸 Gastos</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(totalGastos)} COP</td></tr>`;
+            html += `<tr style='background:#ede3f7;'><td style='text-align:right;font-weight:bold;color:#6c3483;'>TOTAL GENERAL DEL DÍA</td><td style='color:#6c3483;font-weight:bold;font-size:1.2em;'>$${formatoCOP(totalGeneral)} COP</td></tr>`;
+            html += `</table>`;
+
+            html += `<div style='margin-top:2em;text-align:center;font-size:1.1em;color:#6c3483;text-shadow:0 2px 8px #e0c3fc;background:#ede3f7;padding:0.7em 0.5em;border-radius:1em;'>
+                <span style='font-size:1.5em;'>💜</span> ¡Gracias por tu dedicación, Cami! <span style='font-size:1.5em;'>💜</span>
+            </div>`;
+            html += `</div>`;
+
+            document.getElementById('cierreResultado').innerHTML = html + `<div style='margin-top:1em;text-align:center;'><button id='descargarImagen'>Descargar Imagen</button></div>`;
+
+            // Descargar Imagen
+            document.getElementById('descargarImagen').onclick = function() {
+                html2canvas(document.getElementById('cierreDiarioPDF'), {backgroundColor: null, scale:2}).then(canvas => {
+                    let link = document.createElement('a');
+                    link.download = `Cierre_Casino_${fechaCierre.replace(/\//g,'-').replace(/:/g,'-')}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                });
+            };
+        };
+
+        // Guardar y cargar datos en localStorage
+        function guardarDatos() {   
+            localStorage.setItem('registrosMaquinas', JSON.stringify(registrosMaquinas));
+            localStorage.setItem('registrosRecaudos', JSON.stringify(registrosRecaudos));
+            localStorage.setItem('registrosGastos', JSON.stringify(registrosGastos));
+            localStorage.setItem('registrosCervezas', JSON.stringify(registrosCervezas));
+        }
+        function cargarDatos() {
+            const m = localStorage.getItem('registrosMaquinas');
+            const r = localStorage.getItem('registrosRecaudos');
+            const g = localStorage.getItem('registrosGastos');
+            const c = localStorage.getItem('registrosCervezas');
+            if (m) registrosMaquinas = JSON.parse(m);
+            if (r) registrosRecaudos = JSON.parse(r);
+            if (g) registrosGastos = JSON.parse(g);
+            if (c) registrosCervezas = JSON.parse(c);
+        }
+        // Llamar cargarDatos al inicio y actualizar tablas
+        cargarDatos();
+        actualizarTablaMaquinas();
+        actualizarTablaRecaudos();
+        actualizarTablaGastos();
+        actualizarTablaCervezas();
+
+        // Botón limpiar todo
+        document.getElementById('btnLimpiarTodo').onclick = function() {
+            const confirmacion = prompt('Para borrar TODOS los datos escribe: CONFIRMAR');
+            if (confirmacion === 'CONFIRMAR') {
+                localStorage.clear();
+                registrosMaquinas = [];
+                registrosRecaudos = [];
+                registrosGastos = [];
+                registrosCervezas = [];
+                actualizarTablaMaquinas();
+                actualizarTablaRecaudos();
+                actualizarTablaGastos();
+                actualizarTablaCervezas();
+                document.getElementById('cierreResultado').innerHTML = '';
+                // Mensaje bonito para Cami
+                const msg = document.createElement('div');
+                msg.style = 'text-align:center;margin:2em auto 2em auto;padding:2em 1em;background:rgba(162,89,198,0.13);border-radius:2em;max-width:600px;font-size:1.3em;color:#a259c6;box-shadow:0 2px 12px #a259c655;';
+                msg.innerHTML = '🌙 Finalizó el día, nos vemos mañana mi amor. <br>Descansa y sueña bonito, Cami 💜';
+                document.body.appendChild(msg);
+                window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+            } else if (confirmacion !== null) {
+                alert('Debes escribir CONFIRMAR para borrar todo.');
+            }
+        };
+    </script>
+</body>
+</html> 
