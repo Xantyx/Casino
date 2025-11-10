@@ -253,92 +253,7 @@
             </thead>
             <tbody></tbody>
         </table>
-    <!-- SECCIÓN NEQUI (Pega esto donde desees la sección, por ejemplo después de Recaudos) -->
-<section>
-    <div class="section-titulo"><span class="icono" style="color:#a259c6;">💸</span><h2>Transferencias NEQUI (Efectivo a Clientes)</h2></div>
-    <div class="explicacion">Registra aquí cuando un cliente te transfiere a NEQUI y tú le das el efectivo.<span class="detalle-cami">¡Cami, todo bien registrado! 💜</span></div>
-    <div class="separador"></div>
-    <form id="form-nequi">
-        <label for="nombreNequi">Nombre del cliente:</label>
-        <input type="text" id="nombreNequi" required>
-        <label for="valorNequi">Valor transferido ($ COP):</label>
-        <input type="number" id="valorNequi" required min="0" step="100" placeholder="0">
-        <button type="submit">Registrar NEQUI</button>
-    </form>
-    <table id="tabla-nequi">
-        <thead>
-            <tr>
-                <th>Cliente</th>
-                <th>Valor ($ COP)</th>
-                <th>Fecha/Hora</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-        <tfoot>
-            <tr>
-                <td colspan="2">Total NEQUI</td>
-                <td id="totalNequi">$0 COP</td>
-            </tr>
-        </tfoot>
-    </table>
-</section>
-
-<script>
-/* ---- LÓGICA JS PARA NEQUI, solo pega este bloque una vez, debajo de tus otras variables y funciones ---- */
-// Si ya tienes una variable "registrosNequi" en tu JS, usa solo UNA VEZ este bloque.
-let registrosNequi = JSON.parse(localStorage.getItem('registrosNequi') || "[]");
-const tablaNequi = document.getElementById('tabla-nequi').querySelector('tbody');
-
-function guardarNequi() {
-    localStorage.setItem('registrosNequi', JSON.stringify(registrosNequi));
-}
-
-function totalNequi() {
-    return registrosNequi.reduce((acc, r) => acc + Number(r.valor), 0);
-}
-
-function actualizarTablaNequi() {
-    tablaNequi.innerHTML = '';
-    registrosNequi.forEach((r, idx) => {
-        let fila = `<tr>
-            <td>${r.nombre}</td>
-            <td>$${Number(r.valor).toLocaleString('es-CO')}</td>
-            <td>${r.fecha}</td>
-            <td><button class="eliminar-btn" onclick="eliminarRegistroNequi(${idx})">✕</button></td>
-        </tr>`;
-        tablaNequi.innerHTML += fila;
-    });
-    document.getElementById('totalNequi').innerText = `$${totalNequi().toLocaleString('es-CO')} COP`;
-    // Si tienes resumen diario, actualiza ahí también:
-    if(document.getElementById('resumenNequi')) {
-        document.getElementById('resumenNequi').innerText = `$${totalNequi().toLocaleString('es-CO')} COP`;
-    }
-}
-
-function eliminarRegistroNequi(idx) {
-    registrosNequi.splice(idx,1);
-    guardarNequi();
-    actualizarTablaNequi();
-    if(typeof actualizarResumen === "function"){ actualizarResumen(); }
-}
-
-document.getElementById('form-nequi').onsubmit = function(e) {
-    e.preventDefault();
-    let nombre = document.getElementById('nombreNequi').value.trim();
-    let valor = document.getElementById('valorNequi').value;
-    if(nombre && valor && valor > 0) {
-        registrosNequi.push({nombre, valor, fecha: new Date().toLocaleString('es-CO')});
-        guardarNequi();
-        actualizarTablaNequi();
-        if(typeof actualizarResumen === "function"){ actualizarResumen(); }
-        this.reset();
-    }
-}
-
-// Ejecuta al cargar la página
-actualizarTablaNequi();
-</script>
+    </section>
 
     <section>
         <div class="section-titulo"><span class="icono">💵</span><h2>Recaudos de Máquinas</h2></div>
@@ -461,11 +376,6 @@ actualizarTablaNequi();
                 <tr>
                     <td>Total premios pagados</td>
                     <td id="resumenPremios">$0 COP</td>
-                    <tr>
-                        <td>Total NEQUI</td>
-                    <td id="resumenNequi">$0 COP</td>
-                    </tr>
-
                 </tr>
                 <tr>
                     <td>Total cervezas vendidas</td>
@@ -778,21 +688,18 @@ actualizarTablaNequi();
 
         // Resumen Diario
         function actualizarResumen() {
-    // Total premios pagados
-    let totalPremios = registrosMaquinas.reduce((acc, r) => acc + (r.premio || 0), 0);
-    document.getElementById('resumenPremios').textContent = `$${formatoCOP(totalPremios)} COP`;
-    // Total cervezas
-    let totalCervezas = registrosCervezas.reduce((acc, r) => acc + (r.cant * r.valor), 0);
-    document.getElementById('resumenCervezas').textContent = `$${formatoCOP(totalCervezas)} COP`;
-    // Total recaudos
-    let totalRecaudos = registrosRecaudos.reduce((acc, r) => acc + (r.valor || 0), 0);
-    document.getElementById('resumenRecaudos').textContent = `$${formatoCOP(totalRecaudos)} COP`;
-    // Total NEQUI
-    let totalNequi = registrosNequi.reduce((acc, r) => acc + (Number(r.valor) || 0), 0);
-    document.getElementById('resumenNequi').textContent = `$${formatoCOP(totalNequi)} COP`;
-    // Total general
-    document.getElementById('resumenTotal').textContent = `$${formatoCOP(totalPremios + totalCervezas + totalRecaudos + totalNequi)} COP`;
-}
+            // Total premios pagados
+            let totalPremios = registrosMaquinas.reduce((acc, r) => acc + (r.premio || 0), 0);
+            document.getElementById('resumenPremios').textContent = `$${formatoCOP(totalPremios)} COP`;
+            // Total cervezas
+            let totalCervezas = registrosCervezas.reduce((acc, r) => acc + (r.cant * r.valor), 0);
+            document.getElementById('resumenCervezas').textContent = `$${formatoCOP(totalCervezas)} COP`;
+            // Total recaudos
+            let totalRecaudos = registrosRecaudos.reduce((acc, r) => acc + (r.valor || 0), 0);
+            document.getElementById('resumenRecaudos').textContent = `$${formatoCOP(totalRecaudos)} COP`;
+            // Total general
+            document.getElementById('resumenTotal').textContent = `$${formatoCOP(totalPremios + totalCervezas + totalRecaudos)} COP`;
+        }
 
         // Formato de moneda colombiana
         function formatoCOP(valor) {
@@ -824,15 +731,6 @@ actualizarTablaNequi();
                 html += `<tr style='background:#fff;'><td style='color:#222;font-weight:bold;'>${r.num}</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(r.valor)} COP</td><td style='color:#7c3fa6;'>${r.fecha}</td></tr>`;
             });
             html += `<tr style='background:#ede3f7;'><td colspan='2' style='text-align:right;font-weight:bold;color:#6c3483;'>Total recaudos</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(registrosRecaudos.reduce((a,b)=>a+(b.valor||0),0))} COP</td></tr>`;
-            html += `</table>`;
-            // NEQUI
-            html += `<div style='margin-bottom:1.2em;'><span style='font-size:1.5em;'>💸</span> <span style='font-size:1.15em;color:#6c3483;font-weight:bold;text-shadow:0 2px 8px #e0c3fc;background:#ede3f7;padding:0.2em 1em;border-radius:1em;'>Transferencias NEQUI</span></div>`;
-            html += `<table style='width:100%;margin-bottom:0.7em;background:#fff;border-radius:1em;overflow:hidden;font-size:1em;'>`;
-            html += `<tr style='background:#e0c3fc;color:#6c3483;'><th>Cliente</th><th>Valor</th><th>Fecha/Hora</th></tr>`;
-            registrosNequi.forEach(r => {
-                html += `<tr style='background:#fff;'><td style='color:#222;font-weight:bold;'>${r.nombre}</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(r.valor)} COP</td><td style='color:#7c3fa6;'>${r.fecha}</td></tr>`;
-            });
-            html += `<tr style='background:#ede3f7;'><td colspan='2' style='text-align:right;font-weight:bold;color:#6c3483;'>Total NEQUI</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(registrosNequi.reduce((a,b)=>a+(Number(b.valor)||0),0))} COP</td></tr>`;
             html += `</table>`;
 
             // Gastos
@@ -890,8 +788,7 @@ actualizarTablaNequi();
             let totalCervezas = registrosCervezas.reduce((acc, r) => acc + (r.cant * r.valor), 0);
             let totalRecaudos = registrosRecaudos.reduce((acc, r) => acc + (r.valor || 0), 0);
             let totalGastos = registrosGastos.reduce((acc, r) => acc + (r.valor || 0), 0);
-            let totalNequi = registrosNequi.reduce((acc, r) => acc + (Number(r.valor) || 0), 0);
-            let totalGeneral = totalRecaudos + totalCervezas - totalPremios - totalGastos - totalNequi;
+            let totalGeneral = totalPremios + totalCervezas + totalRecaudos;
             html += `<div style='margin:2em 0 1em 0;text-align:center;'>
                 <span style='font-size:2em;'>📊</span>
                 <span style='font-size:1.25em;color:#6c3483;font-weight:bold;text-shadow:0 2px 8px #e0c3fc;background:#ede3f7;padding:0.2em 1em;border-radius:1em;'>Resumen Final</span>
@@ -900,7 +797,6 @@ actualizarTablaNequi();
             html += `<tr style='background:#e0c3fc;color:#6c3483;'><th>Concepto</th><th>Total</th></tr>`;
             html += `<tr><td style='color:#6c3483;'>🎰 Premios pagados</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(totalPremios)} COP</td></tr>`;
             html += `<tr><td style='color:#6c3483;'>🍺 Cervezas vendidas</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(totalCervezas)} COP</td></tr>`;
-            html += `<tr><td style='color:#6c3483;'>💸 NEQUI</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(totalNequi)} COP</td></tr>`;
             html += `<tr><td style='color:#6c3483;'>💵 Recaudos</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(totalRecaudos)} COP</td></tr>`;
             html += `<tr><td style='color:#6c3483;'>💸 Gastos</td><td style='color:#6c3483;font-weight:bold;'>$${formatoCOP(totalGastos)} COP</td></tr>`;
             html += `<tr style='background:#ede3f7;'><td style='text-align:right;font-weight:bold;color:#6c3483;'>TOTAL GENERAL DEL DÍA</td><td style='color:#6c3483;font-weight:bold;font-size:1.2em;'>$${formatoCOP(totalGeneral)} COP</td></tr>`;
@@ -957,18 +853,10 @@ actualizarTablaNequi();
                 registrosRecaudos = [];
                 registrosGastos = [];
                 registrosCervezas = [];
-                registrosNequi = [];
-
-                cargarDatos();
                 actualizarTablaMaquinas();
                 actualizarTablaRecaudos();
                 actualizarTablaGastos();
                 actualizarTablaCervezas();
-                actualizarTablaNequi();         // 👈 ¡AGREGA ESTA!
-                actualizarResumen();            // 👈 Y ESTA SIEMPRE RECOMENDADO
-
-
-
                 document.getElementById('cierreResultado').innerHTML = '';
                 // Mensaje bonito para Cami
                 const msg = document.createElement('div');
@@ -983,4 +871,3 @@ actualizarTablaNequi();
     </script>
 </body>
 </html> 
-
